@@ -1,10 +1,15 @@
 #MATHEMATICAL HELPER FUNCTIONS
 import numpy as np
 
-def skew_symmetric(v: np.ndarray) -> np.ndarray:
+def skew_symmetric(v):
     """
+    Args:
+        v (np.ndarray): A 3-element 1D array [v0, v1, v2].    
+    Returns:
+        np.ndarray: A 3x3 skew-symmetric matrix.
+
     Computes 3x3 skew-symmetric matrix [v_x] from a 3D vector v = [v0, v1, v2].
-    Replaces vector cross products with matrix operations: (v x u) = [v_x] @ u.
+    Replaces vector cross products with matrix operations: (v x u) = [v_x] u.
     """
     return np.array([
         [ 0.0,  -v[2],  v[1]],
@@ -12,22 +17,34 @@ def skew_symmetric(v: np.ndarray) -> np.ndarray:
         [-v[1],  v[0],  0.0 ]
     ])
 
-def quaternion_multiply(q1: np.ndarray, q2: np.ndarray) -> np.ndarray:
-    """
-    Computes Hamilton product of two quaternions q1 x q2.
-    Format: [w, x, y, z]
-    """
+def quaternion_multiply(q1, q2):
+    '''
+    Args:
+        q1 (np.ndarray): First quaternion in [w, x, y, z] format.
+        q2 (np.ndarray): Second quaternion in [w, x, y, z] format.
+        
+    Returns:
+        np.ndarray: The resulting product quaternion in [w, x, y, z] format.
+    '''
+    # Unpack the components of both quaternions [w, x, y, z]
     w1, x1, y1, z1 = q1
     w2, x2, y2, z2 = q2
+    
+    # Compute the Hamilton product components
     return np.array([
-        w1*w2 - x1*x2 - y1*y2 - z1*z2,
-        w1*x2 + x1*w2 + y1*z2 - z1*y2,
-        w1*y2 - x1*z2 + y1*w2 + z1*x2,
-        w1*z2 + x1*y2 - y1*x2 + z1*w2
+        w1*w2 - x1*x2 - y1*y2 - z1*z2,  # Scalar part (w)
+        w1*x2 + x1*w2 + y1*z2 - z1*y2,  # Vector component x
+        w1*y2 - x1*z2 + y1*w2 + z1*x2,  # Vector component y
+        w1*z2 + x1*y2 - y1*x2 + z1*w2   # Vector component z
     ])
 
 def quaternion_to_rotation_matrix(q: np.ndarray) -> np.ndarray:
     """
+    Args:
+        q (np.ndarray): Unit quaternion in [w, x, y, z] format.
+        
+    Returns:
+        np.ndarray: A 3x3 direction cosine rotation matrix.
     Converts unit quaternion q = [w, x, y, z] to a 3x3 Rotation Matrix R_Body_to_World.
     Transforms vectors from IMU Body Frame to World Navigation Frame.
     """
@@ -37,4 +54,5 @@ def quaternion_to_rotation_matrix(q: np.ndarray) -> np.ndarray:
         [2*(x*y + z*w),     1 - 2*(x**2 + z**2), 2*(y*z - x*w)],
         [2*(x*z - y*w),     2*(y*z + x*w),     1 - 2*(x**2 + y**2)]
     ])
+
 
