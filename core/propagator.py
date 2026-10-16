@@ -47,7 +47,7 @@ def propagate_covariance(state: ESKFState, F_x: np.ndarray, dt: float,
     # 4. Enforce numerical symmetry P = 0.5 * (P + P^T)
     state.P = 0.5 * (state.P + state.P.T)
 
-def compute_error_jacobian():
+def compute_error_jacobian(state: ESKFState, accel_meas: np.ndarray, gyro_meas: np.ndarray, dt: float):
     # ARGS: state: ESKFState, accel_meas: array, gyro_meas: array, dt: float value
     #It gives out an array as output
     """
