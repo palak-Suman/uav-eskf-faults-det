@@ -1,24 +1,23 @@
-# SYNTHETIC DATA GENERATOR (Initial Test Data)
+# SYNTHETIC DATA GENERATOR (TESTING DATA)
 
 import numpy as np
 from utilities.data_types import IMUMeasurement, GroundTruthState
 
 def get_dummy_sensor_data():
     #Generates a single synthetic IMU measurement and Ground Truth state for testing.
-    #A timestamp is a precise numerical marker representing the exact moment (in seconds or nanoseconds) a sensor sample was captured by hardware
+    #A timestamp is a marker for when a sensor sample was captured by hardware
     #IMUs sample at high speeds while camera samples are at low speeds, so their timestamps will not align perfectly.
-    #Timestamps allow you to interleave these out-of-sync streams into a single chronologically ordered event timeline.
     timestamp = 0.0
     
-    # Vehicle sitting still on a table: accelerometer reads Gravity (+9.81 on Z)
+    # Vehicle sitting still on a table: accelerometer reads Gravity (+9.81 on Z axis)
     imu = IMUMeasurement(
         timestamp=timestamp,
-        accel=np.array([0.0, 0.0, 9.81]),  # m/s^2
+        accel=np.array([0.0, 0.0, 9.81]),   # m/s^2
         gyro=np.array([0.0, 0.0, 0.0])      # rad/s
     )
 
-    #Ground truth represents the absolute, perfect real-world position, velocity, and orientation of the vehicle at any timestamp.
-    #To estimate and track errors we need to compare our estimated state against this ground truth.
+    #Ground truth represents the absolute, perfect real-world position, true velocity, and orientation of the vehicle at any timestamp.
+    #To estimate and track errors we need to compare our estimated state against this ground truth state values.
     gt = GroundTruthState(
         timestamp=timestamp,
         position=np.array([0.0, 0.0, 0.0]),
@@ -28,15 +27,15 @@ def get_dummy_sensor_data():
     
     return imu, gt
 
-# 2b. SYNTHETIC TIME-SERIES GENERATOR (Continuous Stream)
+# 2b. SYNTHETIC TIME-SERIES GENERATOR 
 
 def generate_synthetic_stream(duration: float = 2.0, dt: float = 0.01):
     """
-    Generates a synchronized stream of IMU measurements and Ground Truth states over time.
-    
+    Generates a continuous synchronized stream of IMU measurements and Ground Truth states over time.
+
     Parameters:
-        duration : Total simulation time in seconds (e.g., 2.0s)
-        dt       : Sampling interval in seconds (0.01s = 100 Hz sampling rate)
+        duration : float : Total simulation time in seconds (e.g., 2.0s)
+        dt       : float : Sampling interval in seconds (0.01s = 100 Hz sampling rate)
     """
     imu_stream = []
     gt_stream = []
@@ -48,11 +47,11 @@ def generate_synthetic_stream(duration: float = 2.0, dt: float = 0.01):
     gravity_world = np.array([0.0, 0.0, 9.81])
     
     # True vehicle acceleration along X-axis (0.5 m/s^2)
-    #Accelerometers measure proper acceleration, not coordinate acceleration
+    #Accelerometers measure proper acceleration which also includes the reading of the force required to counter act on gravity.
     accel_true = np.array([0.5, 0.0, 0.0])
     
     for t in timestamps:
-        # --- A. GROUND TRUTH STATE ---
+        #  A. GROUND TRUTH STATE 
         # Kinematic equations for constant acceleration starting from rest
         pos_true = 0.5 * accel_true * (t ** 2)          # p = 0.5 * a * t^2
         vel_true = accel_true * t                       # v = a * t
@@ -66,7 +65,7 @@ def generate_synthetic_stream(duration: float = 2.0, dt: float = 0.01):
         )
         gt_stream.append(gt_state)
         
-        # --- B. IMU MEASUREMENT ---
+        #  B. IMU MEASUREMENT 
         # Accelerometer measures proper acceleration = true motion + gravity
         accel_measured = accel_true + gravity_world
         gyro_measured = np.array([0.0, 0.0, 0.0])       # Zero angular velocity

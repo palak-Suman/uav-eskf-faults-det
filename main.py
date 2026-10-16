@@ -54,7 +54,6 @@ def main():
 
     # 4. RESULTS & PERFORMANCE VERIFICATION
     final_error = np.linalg.norm(pos_est[-1] - pos_gt[-1])
-    print("===========================================")
     print("ESKF PROPAGATION TEST COMPLETE")
     print("===========================================")
     print(f"Total Simulation Time : {duration:.2f} s ({len(imu_stream)} steps)")

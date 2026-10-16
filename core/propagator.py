@@ -47,7 +47,9 @@ def propagate_covariance(state: ESKFState, F_x: np.ndarray, dt: float,
     # 4. Enforce numerical symmetry P = 0.5 * (P + P^T)
     state.P = 0.5 * (state.P + state.P.T)
 
-def compute_error_jacobian(state: ESKFState, accel_meas: np.ndarray, gyro_meas: np.ndarray, dt: float) -> np.ndarray:
+def compute_error_jacobian():
+    # ARGS: state: ESKFState, accel_meas: array, gyro_meas: array, dt: float value
+    #It gives out an array as output
     """
     Computes the 15x15 discrete error transition matrix F_x for ESKF covariance propagation.
     Linearizes system dynamics around current nominal state and IMU inputs over time interval dt.
@@ -79,9 +81,7 @@ def compute_error_jacobian(state: ESKFState, accel_meas: np.ndarray, gyro_meas: 
     
     return F_x
 
-def predict_imu_step(state: ESKFState, imu: IMUMeasurement, dt: float,
-                     accel_noise_std: float = 0.1, 
-                     gyro_noise_std: float = 0.01):
+def predict_imu_step(state: ESKFState, imu: IMUMeasurement, dt: float,accel_noise_std: float = 0.1, gyro_noise_std: float = 0.01):
     """
     Full ESKF Propagation Step:
     1. Updates Nominal States (Position, Velocity, Orientation Quaternion).
